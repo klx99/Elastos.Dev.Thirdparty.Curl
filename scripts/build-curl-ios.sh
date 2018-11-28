@@ -57,10 +57,10 @@ print_input_log()
 download_tarball()
 {
 	if [ ! -e "$TARBALL_DIR/.$CURL_NAME" ]; then
-		openss_url="$CURL_BASE_URL/$CURL_TARBALL";
-		echo curl "$openss_url" --output "$TARBALL_DIR/$CURL_TARBALL";
-		curl "$openss_url" --output "$TARBALL_DIR/$CURL_TARBALL";
-		echo "$openss_url" > "$TARBALL_DIR/.$CURL_NAME";
+		curl_url="$CURL_BASE_URL/$CURL_TARBALL";
+		echo curl "$curl_url" --output "$TARBALL_DIR/$CURL_TARBALL";
+		curl "$curl_url" --output "$TARBALL_DIR/$CURL_TARBALL";
+		echo "$curl_url" > "$TARBALL_DIR/.$CURL_NAME";
 	fi
 
 	loginfo "$CURL_TARBALL has been downloaded."
@@ -92,7 +92,10 @@ build_curl()
 		--disable-telnet \
 		--disable-tftp
 
-	make -j$MAX_JOBS && make install
+	make -j$MAX_JOBS -C lib libcurl.la && \
+	make -C lib install-libLTLIBRARIES && \
+	make -C include/curl install-pkgincludeHEADERS && \
+	make install-pkgconfigDATA
 }
 
 SCRIPT_DIR=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd);
@@ -111,7 +114,7 @@ main_run()
 	parse_options $@;
 
 	# build openss first
-#	"$SCRIPT_DIR/build-openssl-android.sh"
+	"$SCRIPT_DIR/build-openssl-ios.sh"
 
 	cd "$PROJECT_DIR";
 	loginfo "change directory to $PROJECT_DIR";
