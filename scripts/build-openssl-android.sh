@@ -56,10 +56,10 @@ print_input_log()
 
 download_tarball()
 {
-	if [ ! -e "$BUILD_DIR/.download" ]; then
+	if [ ! -e "$OPENSSL_BUILDDIR/.download" ]; then
 		openss_url="$OPENSSL_BASE_URL/$OPENSSL_TARBALL";
 		curl -O "$openss_url";
-		echo "$openss_url" > "$BUILD_DIR/.download";
+		echo "$openss_url" > "$OPENSSL_BUILDDIR/.download";
 	fi
 
 	loginfo "$OPENSSL_TARBALL has been downloaded."
@@ -67,32 +67,33 @@ download_tarball()
 
 build_openssl()
 {
-	if [ ! -e "$BUILD_DIR/$OPENSSL_NAME" ]; then
+	if [ ! -e "$OPENSSL_BUILDDIR/$OPENSSL_NAME" ]; then
 		tar xf "$OPENSSL_TARBALL";
 	fi
 	loginfo "$OPENSSL_TARBALL has been unpacked."
-	cd "$BUILD_DIR/$OPENSSL_NAME";
+	cd "$OPENSSL_BUILDDIR/$OPENSSL_NAME";
 	export ANDROID_NDK="$ANDROID_TOOLCHAIN";
-	./Configure --prefix=$OUTPUT_DIR android-arm no-asm no-shared no-cast no-idea no-camellia;
+	./Configure --prefix=$OUTPUT_DIR \
+		android-arm \
+		no-asm \
+		no-shared \
+		no-cast \
+		no-idea \
+		no-camellia;
 
 	#make -j$MAX_JOBS && make install_engine
 	make install_dev
 }
 
 SCRIPT_DIR=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd);
-PROJECT_DIR=$(dirname "$SCRIPT_DIR");
-BUILD_DIR="$PROJECT_DIR/build/openssl/";
-OUTPUT_DIR="$PROJECT_DIR/build/output/";
-
-DEBUG_VERBOSE=false;
+source "$SCRIPT_DIR/base.sh";
+source "$SCRIPT_DIR/setenv-android.sh";
 
 OPENSSL_BASE_URL="https://www.openssl.org/source";
 OPENSSL_VERSION="1.1.1a";
 OPENSSL_NAME="openssl-$OPENSSL_VERSION";
 OPENSSL_TARBALL="$OPENSSL_NAME.tar.gz";
-
-source "$SCRIPT_DIR/base.sh";
-source "$SCRIPT_DIR/setenv-android.sh";
+OPENSSL_BUILDDIR="$BUILD_DIR/openssl";
 
 main_run()
 {
@@ -104,7 +105,7 @@ main_run()
 
 	print_input_log;
 
-	mkdir -p "$BUILD_DIR" && cd "$BUILD_DIR";
+	mkdir -p "$OPENSSL_BUILDDIR" && cd "$OPENSSL_BUILDDIR";
 	download_tarball;
 
 	build_openssl;

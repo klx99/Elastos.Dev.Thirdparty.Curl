@@ -1,5 +1,6 @@
 #!/bin/bash
-TARGET=android-19
+
+SDK=19
 
 if [ -z "$ANDROID_NDK_HOME" ]; then
 	echo "Please set your ANDROID_NDK_HOME environment variable first"
@@ -15,12 +16,13 @@ fi
 ANDROID_TOOLCHAIN="$BUILD_DIR/toolchain";
 if [ ! -e "$BUILD_DIR/.toolchain" ]; then
 	rm -rf "$ANDROID_TOOLCHAIN"
-	$ANDROID_NDK_HOME/build/tools/make-standalone-toolchain.sh --arch=arm --platform=$TARGET --install-dir="$ANDROID_TOOLCHAIN"
+	$ANDROID_NDK_HOME/build/tools/make-standalone-toolchain.sh --arch=arm --platform=android-$SDK --stl=libc++ --install-dir="$ANDROID_TOOLCHAIN" --toolchain=arm-linux-androideabi-4.9
 
 	touch "$BUILD_DIR/.toolchain";
 fi
 
-export PATH="$PATH:$ANDROID_TOOLCHAIN/bin"
+export PATH="$ANDROID_TOOLCHAIN/bin:$PATH"
+export CFLAGS="-D__ANDROID_API__=$SDK"
 
 # Setup cross-compile environment
 #export SYSROOT=$TOOLCHAIN/sysroot

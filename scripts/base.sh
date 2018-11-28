@@ -40,11 +40,6 @@ trim() {
 	echo -n "$var"
 }
 
-SCRIPT_DIR=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd);
-PROJECT_DIR=$(dirname "$SCRIPT_DIR");
-PROJECT_DIR=$(dirname "$PROJECT_DIR");
-DEBUG_VERBOSE=false;
-
 CMD_GETOPT="getopt";
 if [ "$(uname -s)" == "Darwin" ]; then
 	CMD_GETOPT="/usr/local/Cellar/gnu-getopt/1.1.6/bin/getopt";
@@ -56,3 +51,11 @@ if [ -f /proc/cpuinfo ]; then
 elif [ ! -z $(which sysctl) ]; then
 	MAX_JOBS=$(sysctl -n hw.ncpu)
 fi
+
+SCRIPT_DIR=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd);
+PROJECT_DIR=$(dirname "$SCRIPT_DIR");
+BUILD_DIR="$PROJECT_DIR/build";
+OUTPUT_DIR="$BUILD_DIR/output";
+
+DEBUG_VERBOSE=false;
+
