@@ -56,10 +56,11 @@ print_input_log()
 
 download_tarball()
 {
-	if [ ! -e "$OPENSSL_BUILDDIR/.download" ]; then
+	if [ ! -e "$TARBALL_DIR/.$OPENSSL_NAME" ]; then
 		openss_url="$OPENSSL_BASE_URL/$OPENSSL_TARBALL";
-		curl -O "$openss_url";
-		echo "$openss_url" > "$OPENSSL_BUILDDIR/.download";
+		echo curl "$openss_url" --output "$TARBALL_DIR/$OPENSSL_TARBALL";
+		curl "$openss_url" --output "$TARBALL_DIR/$OPENSSL_TARBALL";
+		echo "$openss_url" > "$TARBALL_DIR/.$OPENSSL_NAME";
 	fi
 
 	loginfo "$OPENSSL_TARBALL has been downloaded."
@@ -68,7 +69,7 @@ download_tarball()
 build_openssl()
 {
 	if [ ! -e "$OPENSSL_BUILDDIR/$OPENSSL_NAME" ]; then
-		tar xf "$OPENSSL_TARBALL";
+		tar xf "$TARBALL_DIR/$OPENSSL_TARBALL";
 	fi
 	loginfo "$OPENSSL_TARBALL has been unpacked."
 	cd "$OPENSSL_BUILDDIR/$OPENSSL_NAME";

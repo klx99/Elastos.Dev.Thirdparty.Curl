@@ -54,8 +54,8 @@ fi
 
 SCRIPT_DIR=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd);
 PROJECT_DIR=$(dirname "$SCRIPT_DIR");
-BUILD_DIR="$PROJECT_DIR/build";
-OUTPUT_DIR="$BUILD_DIR/output";
+TARBALL_DIR="$PROJECT_DIR/tarball";
+mkdir -p "$TARBALL_DIR";
 
 DEBUG_VERBOSE=false;
 

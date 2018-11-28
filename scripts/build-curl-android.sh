@@ -56,10 +56,11 @@ print_input_log()
 
 download_tarball()
 {
-	if [ ! -e "$CURL_BUILDDIR/.download" ]; then
+	if [ ! -e "$TARBALL_DIR/.$CURL_NAME" ]; then
 		openss_url="$CURL_BASE_URL/$CURL_TARBALL";
-		curl -O "$openss_url";
-		echo "$openss_url" > "$CURL_BUILDDIR/.download";
+		echo curl "$openss_url" --output "$TARBALL_DIR/$CURL_TARBALL";
+		curl "$openss_url" --output "$TARBALL_DIR/$CURL_TARBALL";
+		echo "$openss_url" > "$TARBALL_DIR/.$CURL_NAME";
 	fi
 
 	loginfo "$CURL_TARBALL has been downloaded."
@@ -68,34 +69,33 @@ download_tarball()
 build_curl()
 {
 	if [ ! -e "$CURL_BUILDDIR/$CURL_NAME" ]; then
-		tar xf "$CURL_TARBALL";
+		tar xf "$TARBALL_DIR/$CURL_TARBALL";
 	fi
 	loginfo "$CURL_TARBALL has been unpacked."
 	cd "$CURL_BUILDDIR/$CURL_NAME";
 
-	#./configure --prefix=$OUTPUT_DIR \
-		#--host=arm-linux-androideabi \
-		#--target=arm-linux-androideabi \
-		#--with-sysroot=$ANDROID_TOOLCHAIN/sysroot \
-		#--with-ssl=$OUTPUT_DIR \
-		#--enable-static \
-		#--disable-shared \
-		#--disable-verbose \
-		#--enable-threaded-resolver \
-		#--enable-libgcc \
-		#--enable-ipv6 \
-		#--disable-dict \
-		#--disable-ftp \
-		#--disable-gopher \
-		#--disable-imap \
-		#--disable-pop3 \
-		#--disable-rtsp \
-		#--disable-smb \
-		#--disable-smtp \
-		#--disable-telnet \
-		#--disable-tftp
+	./configure --prefix=$OUTPUT_DIR \
+		--host=arm-linux-androideabi \
+		--target=arm-linux-androideabi \
+		--with-sysroot=$ANDROID_TOOLCHAIN/sysroot \
+		--with-ssl=$OUTPUT_DIR \
+		--enable-static \
+		--disable-shared \
+		--disable-verbose \
+		--enable-threaded-resolver \
+		--enable-libgcc \
+		--enable-ipv6 \
+		--disable-dict \
+		--disable-ftp \
+		--disable-gopher \
+		--disable-imap \
+		--disable-pop3 \
+		--disable-rtsp \
+		--disable-smb \
+		--disable-smtp \
+		--disable-telnet \
+		--disable-tftp
 
-	#make -j$MAX_JOBS && make install_engine
 	make -j$MAX_JOBS && make install
 }
 
