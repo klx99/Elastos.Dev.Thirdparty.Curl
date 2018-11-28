@@ -7,14 +7,14 @@ print_usage()
 {
 	echo '
 NAME
-       build-curl-android
+       build-curl-ios
 
 SYNOPSIS
-       build-curl-android [options]
-       Example: ./build-curl-android.sh
+       build-curl-ios [options]
+       Example: ./build-curl-ios.sh
 
 DESCRIPTION
-       Auto build curl for android script.
+       Auto build curl for ios script.
 
 OPTIONS
        -h, --help
@@ -25,7 +25,7 @@ parse_options()
 {
 	options=$($CMD_GETOPT -o h \
 												--long "help" \
-												-n 'build-curl-android' -- "$@");
+												-n 'build-curl-ios' -- "$@");
 	eval set -- "$options"
 	while true; do
 		case "$1" in
@@ -73,11 +73,8 @@ build_curl()
 	fi
 	loginfo "$CURL_TARBALL has been unpacked."
 	cd "$CURL_BUILDDIR/$CURL_NAME";
-
 	./configure --prefix=$OUTPUT_DIR \
-		--host=arm-linux-androideabi \
-		--target=arm-linux-androideabi \
-		--with-sysroot=$ANDROID_TOOLCHAIN/sysroot \
+		--host=arm-apple-darwin \
 		--with-ssl=$OUTPUT_DIR \
 		--enable-static \
 		--disable-shared \
@@ -100,7 +97,7 @@ build_curl()
 
 SCRIPT_DIR=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd);
 source "$SCRIPT_DIR/base.sh";
-source "$SCRIPT_DIR/setenv-android.sh";
+source "$SCRIPT_DIR/setenv-ios.sh";
 
 CURL_BASE_URL="https://curl.haxx.se/download";
 CURL_VERSION="7.62.0";
